@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Modular Chord Circle Studio</title>
+  <style>
+    :root {
+      --bg: #0b1020;
+      --panel: #121a2e;
+      --text: #e8eef8;
+      --muted: #94a3b8;
+      --accent: #a5b4fc;
+      --btn: #1e293b;
+      --btn-hover: #334155;
+      --btn-border: #475569;
+      --ok: #34d399;
+      --neon: #f472b6;
+      --cyan: #67e8f9;
+    }
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0; padding: 0;
+      background: var(--bg); color: var(--text);
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, sans-serif;
+      min-height: 100%;
+    }
+    body { padding: 16px; max-width: 880px; margin: 0 auto; }
+    h1 {
+      font-size: 1.35rem; font-weight: 650; margin: 0 0 4px;
+      color: var(--accent); letter-spacing: 0.01em;
+    }
+    .sub { color: var(--muted); font-size: 0.9rem; margin-bottom: 14px; }
+    .toolbar {
+      display: flex; flex-wrap: wrap; gap: 10px; align-items: center;
+      margin-bottom: 12px; padding: 12px; background: var(--panel);
+      border-radius: 12px; border: 1px solid #1f2a44;
+    }
+    .control {
+      display: flex; flex-direction: column; gap: 4px;
+      min-width: 140px; flex: 1 1 160px;
+    }
+    .control label {
+      font-size: 0.75rem; color: var(--muted);
+      font-family: ui-monospace, Menlo, monospace;
+      display: flex; justify-content: space-between;
+    }
+    .control label strong { color: var(--cyan); }
+    input[type="range"] {
+      width: 100%; accent-color: var(--neon);
+      min-height: 32px;
+    }
+    select {
+      appearance: none; border: 1px solid var(--btn-border);
+      background: var(--btn); color: var(--text);
+      font-size: 0.9rem; padding: 10px 12px; min-height: 44px;
+      border-radius: 10px; cursor: pointer;
+    }
+    button {
+      appearance: none; border: 1px solid var(--btn-border);
+      background: var(--btn); color: var(--text);
+      font-size: 0.95rem; font-weight: 600;
+      padding: 10px 14px; min-height: 44px; min-width: 44px;
+      border-radius: 10px; cursor: pointer;
+      touch-action: manipulation;
+    }
+    button:hover { background: var(--btn-hover); }
+    button:active { transform: scale(0.98); }
+    button.primary { background: #312e81; border-color: #6366f1; }
+    button.primary:hover { background: #3730a3; }
+    button.active { background: #831843; border-color: var(--neon); }
+    .status {
+      flex: 1 1 180px; color: var(--muted); font-size: 0.85rem;
+      font-family: ui-monospace, Menlo, monospace;
+    }
+    .status strong { color: var(--ok); }
+    #stage {
+      width: 100%; background: var(--bg);
+      border-radius: 12px; border: 1px solid #1f2a44;
+      overflow: hidden;
+    }
+    #stage svg { display: block; width: 100%; height: auto; }
+    .hint { margin-top: 10px; color: var(--muted); font-size: 0.8rem; line-height: 1.45; }
+    .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; width: 100%; }
+  </style>
+</head>
+<body>
+  <h1>Modular Chord Circle Studio</h1>
+  <p class="sub">N points on a circle · chord i → (k·i mod N) · offline neon envelopes</p>
+
+  <div class="toolbar">
+    <div class="control">
+      <label for="nSlider">N (points) <strong id="nVal">200</strong></label>
+      <input id="nSlider" type="range" min="3" max="400" step="1" value="200" />
+    </div>
+    <div class="control">
+      <label for="kSlider">k (multiplier) <strong id="kVal">2</strong></label>
+      <input id="kSlider" type="range" min="0" max="399" step="1" value="2" />
+    </div>
+    <div class="control" style="flex:0 1 140px; min-width:120px;">
+      <label for="colorMode">color</label>
+      <select id="colorMode">
+        <option value="index" selected>by index</option>
+        <option value="length">by chord length</option>
+        <option value="solid">solid neon</option>
+      </select>
+    </div>
+    <div class="row">
+      <button id="btnReset" type="button">Reset</button>
+      <button id="btnAnimate" type="button">Animate k</button>
+      <button id="btnExport" type="button" class="primary">Export SVG</button>
+      <span class="status" id="status">ready</span>
+    </div>
+  </div>
+
+  <div id="stage" aria-live="polite"></div>
+  <p class="hint">
+    Hero preset: <strong style="color:var(--cyan)">N=200, k=2</strong> (cardioid envelope).
+    Self-loops (fixed points) are skipped. Max interactive N=400. No network.
+    Try k=3 / k=4 for denser star / nephroid-ish patterns.
+  </p>
+
+  <script src="app.js"></script>
+</body>
+</html>
